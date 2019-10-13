@@ -76,9 +76,9 @@ export function createStore() {
 class Reducer extends ImmerReducer<State> {
     addDay(date: Date, id: string, entries: Entry[]) {
         const day = this.state.days[formatDate(date)];
-        // if (day && day.id === id) {
-        //     return;
-        // }
+        if (day && day.id === id) {
+            return;
+        }
 
         this.draftState.days[formatDate(date)] = {
             id: id,
