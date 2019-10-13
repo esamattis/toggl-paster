@@ -29,6 +29,7 @@ export interface State {
     days: {
         [day: string]: Day | undefined;
     };
+    lastCopiedDate?: string;
 }
 
 const initialState: State = {
@@ -92,6 +93,7 @@ class Reducer extends ImmerReducer<State> {
         if (day) {
             day.copied = true;
         }
+        this.setLastCopiedDate(date);
     }
 
     setProjectCopied(date: Date, project: string) {
@@ -101,6 +103,14 @@ class Reducer extends ImmerReducer<State> {
         }
 
         day.projectsCopied[project] = true;
+    }
+
+    setLastCopiedDate(date?: Date) {
+        if (date) {
+            this.draftState.lastCopiedDate = formatDate(date);
+        } else {
+            delete this.draftState.lastCopiedDate;
+        }
     }
 }
 

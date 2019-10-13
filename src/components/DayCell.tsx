@@ -3,13 +3,14 @@ import { bemed } from "react-bemed";
 import { Button, Tooltip, message, Typography, Icon } from "antd";
 import { Link } from "react-router-dom";
 import prettyMs from "pretty-ms";
-import { Actions } from "../redux/state";
+import { Actions, useAppSelector } from "../redux/state";
 import { useDispatch } from "react-redux";
 import {
     useRouteDate,
     copyToClipboard,
     useDay,
     formatDatePath,
+    formatDate,
 } from "../utils";
 import { getMonth } from "date-fns/esm";
 import { css } from "react-bemed/css";
@@ -17,12 +18,14 @@ import { uniq } from "lodash-es";
 
 const Blk = bemed({
     css: css`
-        /* background-color: red; */
         text-align: center;
     `,
     mods: {
         otherMonth: css`
             opacity: 0.2;
+        `,
+        lastCopied: css`
+            background-color: rgba(251, 255, 0, 0.3);
         `,
     },
     elements: {
@@ -66,6 +69,7 @@ function formatClock(duration: number) {
 }
 
 export function DayCell(props: { date: Date }) {
+    const lastCopiedDate = useAppSelector(state => state.lastCopiedDate);
     const day = useDay(props.date);
 
     const [_year, month] = useRouteDate();
@@ -92,7 +96,10 @@ export function DayCell(props: { date: Date }) {
 
     return (
         <Tooltip title={projects}>
-            <Blk otherMonth={!isCurrentMonth}>
+            <Blk
+                otherMonth={!isCurrentMonth}
+                lastCopied={lastCopiedDate === formatDate(props.date)}
+            >
                 <Blk.Duration ok={day.copied}>
                     {prettyMs(duration)}
                 </Blk.Duration>
