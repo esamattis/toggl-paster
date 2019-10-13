@@ -103,6 +103,7 @@ class Reducer extends ImmerReducer<State> {
         }
 
         day.projectsCopied[project] = true;
+        this.setLastCopiedDate(date);
     }
 
     setLastCopiedDate(date?: Date) {
