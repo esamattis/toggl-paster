@@ -1,5 +1,4 @@
 import React from "react";
-import prettyMs from "pretty-ms";
 import { Link } from "react-router-dom";
 import { List, Button } from "antd";
 import {
@@ -16,7 +15,7 @@ import { css } from "react-bemed/css";
 import { Entry, Actions } from "../redux/state";
 import { uniq } from "lodash-es";
 import { useDispatch } from "react-redux";
-import { addDays } from "date-fns";
+import { addDays, format } from "date-fns";
 
 const Blk = bemed({
     css: css`
@@ -167,7 +166,7 @@ export function DayDetails() {
                     Tomorrow
                 </Blk.Link>
             </Blk.Header>
-            <Blk.Title1>{formatDate(date)}</Blk.Title1>
+            <Blk.Title1>{format(date, "d.L EEEE")}</Blk.Title1>
             <Entries />
         </Blk>
     );
