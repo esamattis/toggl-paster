@@ -7,7 +7,6 @@ import {
     createReducerFunction,
     createActionCreators,
 } from "immer-reducer";
-import moment, { Moment } from "moment";
 import { debounce } from "lodash-es";
 import { formatDate } from "../utils";
 
@@ -20,7 +19,7 @@ export interface Entry {
 export interface Day {
     id: string;
     copied: boolean;
-    projectCopied: {
+    projectsCopied: {
         [project: string]: boolean | undefined;
     };
     entries: Entry[];
@@ -38,12 +37,6 @@ const initialState: State = {
 
 const STATE_KEY = "togglePasterState";
 
-const saveState = debounce(state => {
-    console.log("Saving!");
-    window.localStorage[STATE_KEY] = JSON.stringify(state);
-    message.success("State saved!");
-}, 500);
-
 export function createStore() {
     let savedState;
 
@@ -55,18 +48,28 @@ export function createStore() {
 
     const reducer = createReducerFunction(Reducer);
 
+    const saveState = debounce(() => {
+        console.log("Saving!");
+        const state = store.getState();
+        window.localStorage[STATE_KEY] = JSON.stringify(state);
+        console.log("Saved", state);
+        message.success("State saved!");
+    }, 500);
+
     const wrappedReducer = (state: any, action: any) => {
         const newState = reducer(state, action);
         if (action.type !== "@@INIT") {
-            saveState(state);
+            saveState();
         }
         return newState;
     };
 
-    return configureStore({
+    const store = configureStore({
         preloadedState: savedState || initialState,
         reducer: wrappedReducer,
     });
+
+    return store;
 }
 
 class Reducer extends ImmerReducer<State> {
@@ -80,7 +83,7 @@ class Reducer extends ImmerReducer<State> {
             id: id,
             entries: entries,
             copied: false,
-            projectCopied: {},
+            projectsCopied: {},
         };
     }
 
@@ -89,6 +92,15 @@ class Reducer extends ImmerReducer<State> {
         if (day) {
             day.copied = true;
         }
+    }
+
+    setProjectCopied(date: Date, project: string) {
+        const day = this.draftState.days[formatDate(date)];
+        if (!day) {
+            return;
+        }
+
+        day.projectsCopied[project] = true;
     }
 }
 

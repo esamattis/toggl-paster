@@ -45,6 +45,11 @@ const Blk = bemed({
                 align-items: center;
                 color: red;
             `,
+            mods: {
+                ok: css`
+                    color: lightgreen;
+                `,
+            },
         }),
     },
 })("CellContainer");
@@ -81,6 +86,10 @@ export function DayCell(props: { date: Date }) {
         .filter(Boolean)
         .join(",");
 
+    const projectsOk = day.entries.every(
+        entry => day.projectsCopied[entry.project],
+    );
+
     return (
         <Tooltip title={projects}>
             <Blk otherMonth={!isCurrentMonth}>
@@ -89,18 +98,19 @@ export function DayCell(props: { date: Date }) {
                 </Blk.Duration>
 
                 <Button
+                    type="primary"
                     disabled={!isCurrentMonth}
                     onClick={() => {
                         copyToClipboard(formatClock(duration));
                         dispatch(Actions.setCopied(props.date));
-                        message.info(
-                            `Copied "${formatClock(duration)}" to clipboard`,
-                        );
                     }}
                 >
                     Copy
                 </Button>
-                <Blk.ProjectsLink to={formatDatePath(props.date)}>
+                <Blk.ProjectsLink
+                    to={formatDatePath(props.date)}
+                    ok={projectsOk}
+                >
                     Projects
                     <Icon type="caret-right" />
                 </Blk.ProjectsLink>

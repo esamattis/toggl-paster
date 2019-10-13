@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { format } from "date-fns";
 import { useAppSelector } from "./redux/state";
+import { message } from "antd";
 
 export function useRouteDate(): [number, number, number | undefined] {
     const location = useLocation();
@@ -34,6 +35,7 @@ export function copyToClipboard(text: string) {
     el.select();
     var success = document.execCommand("copy");
     document.body.removeChild(el);
+    message.info(`Copied "${text}" to clipboard`);
     return success;
 }
 

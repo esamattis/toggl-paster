@@ -6,6 +6,7 @@ import { useCurrentDate } from "../utils";
 import { bemed } from "react-bemed";
 import { css } from "react-bemed/css";
 import moment from "moment";
+import { format } from "date-fns/esm";
 
 const Blk = bemed({
     css: css`
@@ -27,17 +28,20 @@ const Blk = bemed({
 })("MonthContainer");
 
 export function Month() {
-    const panelDate = moment(useCurrentDate());
+    const date = useCurrentDate();
     const history = useHistory();
 
     return (
         <Blk>
             <Blk.Header>
-                <h1>{panelDate.format("YYYY-MM-DD")}</h1>
-                <p>Just drop your Toggl_time_entries_*.csv files here</p>
+                <h1>{format(date, "MMMM yyyy")}</h1>
+                <p>
+                    Just drop your Toggl_time_entries_*.csv files here.{" "}
+                    <a href="https://github.com/epeli/toggl-paster">Github</a>.
+                </p>
             </Blk.Header>
             <Calendar
-                value={panelDate}
+                value={moment(date)}
                 mode="month"
                 // onSelect={e => {
                 //     console.log("selected", e);

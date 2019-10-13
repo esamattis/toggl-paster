@@ -12,7 +12,7 @@ import { FileDrop } from "./components/FileDrop";
 function Root() {
     const store = createStore();
     return (
-        <Provider store={store}>
+        <Provider store={store as any}>
             <Router>
                 <FileDrop>
                     <Main></Main>
