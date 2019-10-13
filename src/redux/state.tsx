@@ -1,6 +1,5 @@
 import { configureStore } from "@epeli/redux-stack";
 import { message } from "antd";
-import { format } from "date-fns";
 import { useSelector } from "react-redux";
 
 import {
@@ -10,6 +9,7 @@ import {
 } from "immer-reducer";
 import moment, { Moment } from "moment";
 import { debounce } from "lodash-es";
+import { formatDate } from "../utils";
 
 export interface Entry {
     project: string;
@@ -57,7 +57,9 @@ export function createStore() {
 
     const wrappedReducer = (state: any, action: any) => {
         const newState = reducer(state, action);
-        saveState(state);
+        if (action.type !== "@@INIT") {
+            saveState(state);
+        }
         return newState;
     };
 
@@ -65,10 +67,6 @@ export function createStore() {
         preloadedState: savedState || initialState,
         reducer: wrappedReducer,
     });
-}
-
-export function formatDate(date: Date) {
-    return format(date, "yyyy-LL-dd");
 }
 
 class Reducer extends ImmerReducer<State> {

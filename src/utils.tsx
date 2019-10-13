@@ -1,5 +1,6 @@
 import { useLocation } from "react-router-dom";
-import moment from "moment";
+import { format } from "date-fns";
+import { useAppSelector } from "./redux/state";
 
 export function useRouteDate(): [number, number, number | undefined] {
     const location = useLocation();
@@ -19,7 +20,7 @@ export function useRouteDate(): [number, number, number | undefined] {
 export function useCurrentDate() {
     const [year, month, day] = useRouteDate();
 
-    return moment({ year, month: month - 1, day: day || new Date().getDate() });
+    return new Date(year, month - 1, day || new Date().getDate());
 }
 
 export function copyToClipboard(text: string) {
@@ -34,4 +35,22 @@ export function copyToClipboard(text: string) {
     var success = document.execCommand("copy");
     document.body.removeChild(el);
     return success;
+}
+
+export function formatDate(date: Date) {
+    return format(date, "yyyy-LL-dd");
+}
+
+export function formatDatePath(date: Date) {
+    return format(date, "/yyyy/LL/dd");
+}
+
+export function formatMonthPath(date: Date) {
+    return format(date, "/yyyy/LL");
+}
+
+export function useDay(date: Date) {
+    return useAppSelector(state => {
+        return state.days[formatDate(date)];
+    });
 }

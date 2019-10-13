@@ -6,8 +6,9 @@ import { bemed } from "react-bemed";
 import { css } from "react-bemed/css";
 import { Entry, Actions } from "../redux/state";
 import { useDispatch } from "react-redux";
+import { message } from "antd";
 
-const FileDropContainer = bemed({
+const Blk = bemed({
     css: css``,
     elements: {
         Overlay: bemed({
@@ -17,9 +18,16 @@ const FileDropContainer = bemed({
                 left: 0px;
                 right: 0px;
                 bottom: 0px;
-                background-color: red;
-                opacity: 0.3;
+                background-color: rgba(0, 0, 0, 0.75);
                 z-index: 50;
+            `,
+        }),
+        DropText: bemed({
+            css: css`
+                font-size: 44pt;
+                color: white;
+                justify-content: center;
+                align-items: center;
             `,
         }),
     },
@@ -96,6 +104,13 @@ function useFileParser() {
     const dispatch = useDispatch();
 
     return async (file: File) => {
+        if (!file.name.startsWith("Toggl_time_entries_")) {
+            message.error(
+                `Bad file name ${file.name} - file name must start with Toggl_time_entries_`,
+            );
+            return;
+        }
+
         const days: ReturnType<typeof parseTogglEntries> = await new Promise(
             resolve => {
                 Papa.parse(file, {
@@ -139,17 +154,21 @@ export function FileDrop(props: { children: React.ReactNode }) {
             // }}
             onDrop={e => {
                 e.preventDefault();
-                parseFile(e.dataTransfer.files[0]);
+                for (const file of Array.from(e.dataTransfer.files)) {
+                    parseFile(file);
+                }
                 setHovering(false);
             }}
         >
             {props.children}
             {isHovering && (
-                <FileDropContainer.Overlay
+                <Blk.Overlay
                     onClick={() => {
                         setHovering(false);
                     }}
-                ></FileDropContainer.Overlay>
+                >
+                    <Blk.DropText>Drop it!</Blk.DropText>
+                </Blk.Overlay>
             )}
         </div>
     );

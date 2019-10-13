@@ -1,23 +1,32 @@
 import React from "react";
 import { bemed } from "react-bemed";
-import { Button, Tooltip, message, Typography } from "antd";
+import { Button, Tooltip, message, Typography, Icon } from "antd";
+import { Link } from "react-router-dom";
 import prettyMs from "pretty-ms";
-import { useAppSelector, formatDate, Actions } from "../redux/state";
+import { Actions } from "../redux/state";
 import { useDispatch } from "react-redux";
-import { useRouteDate, copyToClipboard } from "../utils";
+import {
+    useRouteDate,
+    copyToClipboard,
+    useDay,
+    formatDatePath,
+} from "../utils";
 import { getMonth } from "date-fns/esm";
 import { css } from "react-bemed/css";
-
-const { Paragraph } = Typography;
+import { uniq } from "lodash-es";
 
 const Blk = bemed({
     css: css`
         /* background-color: red; */
         text-align: center;
     `,
+    mods: {
+        otherMonth: css`
+            opacity: 0.2;
+        `,
+    },
     elements: {
         Duration: bemed({
-            as: Paragraph,
             css: css`
                 font-size: 140%;
                 color: red;
@@ -27,6 +36,15 @@ const Blk = bemed({
                     color: lightgreen;
                 `,
             },
+        }),
+        ProjectsLink: bemed({
+            as: Link,
+            css: css`
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                color: red;
+            `,
         }),
     },
 })("CellContainer");
@@ -43,11 +61,7 @@ function formatClock(duration: number) {
 }
 
 export function DayCell(props: { date: Date }) {
-    console.log("CHcka", formatDate(props.date));
-
-    const day = useAppSelector(state => {
-        return state.days[formatDate(props.date)];
-    });
+    const day = useDay(props.date);
 
     const [_year, month] = useRouteDate();
 
@@ -63,15 +77,17 @@ export function DayCell(props: { date: Date }) {
         return acc + current.duration;
     }, 0);
 
+    const projects = uniq(day.entries.map(entry => entry.project))
+        .filter(Boolean)
+        .join(",");
+
     return (
-        <Blk>
-            <Blk.Duration strong ok={day.copied}>
-                {prettyMs(duration)}
-            </Blk.Duration>
+        <Tooltip title={projects}>
+            <Blk otherMonth={!isCurrentMonth}>
+                <Blk.Duration ok={day.copied}>
+                    {prettyMs(duration)}
+                </Blk.Duration>
 
-            {/* {day.copied ? "OK" : "NOPE"} */}
-
-            <Tooltip title={formatClock(duration)}>
                 <Button
                     disabled={!isCurrentMonth}
                     onClick={() => {
@@ -84,7 +100,11 @@ export function DayCell(props: { date: Date }) {
                 >
                     Copy
                 </Button>
-            </Tooltip>
-        </Blk>
+                <Blk.ProjectsLink to={formatDatePath(props.date)}>
+                    Projects
+                    <Icon type="caret-right" />
+                </Blk.ProjectsLink>
+            </Blk>
+        </Tooltip>
     );
 }
