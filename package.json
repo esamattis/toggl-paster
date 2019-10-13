@@ -5,6 +5,7 @@
     "main": "index.js",
     "scripts": {
         "dev": "webpack-dev-server --mode development --host 0.0.0.0",
+        "build": "mkdir -p dist && webpack --mode production && cp src/index.html dist",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "browserslist": [
