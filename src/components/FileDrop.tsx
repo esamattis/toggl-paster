@@ -1,0 +1,156 @@
+import React from "react";
+import sha1 from "sha1";
+import stringify from "json-stable-stringify";
+import Papa from "papaparse";
+import { bemed } from "react-bemed";
+import { css } from "react-bemed/css";
+import { Entry, Actions } from "../redux/state";
+import { useDispatch } from "react-redux";
+
+const FileDropContainer = bemed({
+    css: css``,
+    elements: {
+        Overlay: bemed({
+            css: css`
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                right: 0px;
+                bottom: 0px;
+                background-color: red;
+                opacity: 0.3;
+                z-index: 50;
+            `,
+        }),
+    },
+})("FileDropContainer");
+
+function parseDuration(duration: string): number {
+    if (!duration) {
+        return 0;
+    }
+
+    const [hours, minutes, seconds] = duration
+        .split(":")
+        .map(section => parseInt(section, 10));
+
+    return hours * 60 * 60 * 1000 + minutes * 60 * 1000 + seconds * 1000;
+}
+
+function parseTogglEntries(res: Papa.ParseResult) {
+    const days: Record<
+        string,
+        | {
+              entries: Entry[];
+          }
+        | undefined
+    > = {};
+
+    for (const row of res.data.slice(1)) {
+        const [
+            user,
+            email,
+            client,
+            project,
+            task,
+            description,
+            billable,
+            startDate,
+            startTime,
+            endDate,
+            endTime,
+            duration,
+            tags,
+            amount,
+        ] = row;
+
+        if (!startDate) {
+            continue;
+        }
+
+        let day = days[startDate];
+
+        if (!day) {
+            day = {
+                entries: [],
+            };
+            days[startDate] = day;
+        }
+
+        day.entries.push({
+            project: project,
+            description: description,
+            duration: parseDuration(duration),
+        });
+    }
+
+    return days;
+}
+
+async function generateId(ob: any): Promise<string> {
+    const str = stringify(ob);
+    return sha1(str);
+}
+
+function useFileParser() {
+    const dispatch = useDispatch();
+
+    return async (file: File) => {
+        const days: ReturnType<typeof parseTogglEntries> = await new Promise(
+            resolve => {
+                Papa.parse(file, {
+                    complete(res) {
+                        resolve(parseTogglEntries(res));
+                    },
+                });
+            },
+        );
+
+        for (const [date, day] of Object.entries(days)) {
+            if (day) {
+                const id = await generateId(day);
+                dispatch(Actions.addDay(new Date(date), id, day.entries));
+            }
+        }
+    };
+}
+
+export function FileDrop(props: { children: React.ReactNode }) {
+    const [isHovering, setHovering] = React.useState(false);
+    const parseFile = useFileParser();
+
+    return (
+        <div
+            onDragEnter={e => {
+                e.preventDefault();
+                console.log("enter");
+                setHovering(true);
+            }}
+            onDragOver={e => {
+                e.preventDefault();
+            }}
+            onDrag={e => {
+                e.preventDefault();
+                console.log("just dragggg");
+            }}
+            // onDragLeave={() => {
+            //     setHovering(false);
+            //     console.log("leave");
+            // }}
+            onDrop={e => {
+                e.preventDefault();
+                parseFile(e.dataTransfer.files[0]);
+                setHovering(false);
+            }}
+        >
+            {props.children}
+            {isHovering && (
+                <FileDropContainer.Overlay
+                    onClick={() => {
+                        setHovering(false);
+                    }}
+                ></FileDropContainer.Overlay>
+            )}
+        </div>
+    );
+}
