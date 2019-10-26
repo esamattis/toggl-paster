@@ -56,3 +56,14 @@ export function useDay(date: Date) {
         return state.days[formatDate(date)];
     });
 }
+
+export async function readBrowserFile(file: File): Promise<string> {
+    const reader = new FileReader();
+
+    return new Promise(resolve => {
+        reader.onload = (e: any) => {
+            resolve(e.target.result as string);
+        };
+        reader.readAsText(file);
+    });
+}

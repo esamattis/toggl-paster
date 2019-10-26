@@ -4,9 +4,10 @@ import stringify from "json-stable-stringify";
 import Papa from "papaparse";
 import { bemed } from "react-bemed";
 import { css } from "react-bemed/css";
-import { Entry, Actions } from "../redux/store";
+import { Entry, Actions, State } from "../redux/store";
 import { useDispatch } from "react-redux";
 import { message } from "antd";
+import { readBrowserFile } from "../utils";
 
 const Blk = bemed({
     css: css``,
@@ -100,10 +101,26 @@ async function generateId(ob: any): Promise<string> {
     return sha1(str);
 }
 
+async function importJsonData(dispatch: Function, file: File) {
+    const stringData = await readBrowserFile(file);
+    const state: State = JSON.parse(stringData);
+
+    const count = Object.keys(state.days).length;
+
+    if (confirm(`Want to replace state with ${count} entries?`)) {
+        dispatch(Actions.importState(state));
+    }
+}
+
 function useFileParser() {
     const dispatch = useDispatch();
 
     return async (file: File) => {
+        if (file.name.startsWith("toggl-paster-export-")) {
+            importJsonData(dispatch, file);
+            return;
+        }
+
         if (!file.name.startsWith("Toggl_time_entries_")) {
             message.error(
                 `Bad file name ${file.name} - file name must start with Toggl_time_entries_`,

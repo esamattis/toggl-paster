@@ -113,6 +113,10 @@ class Reducer extends ImmerReducer<State> {
             delete this.draftState.lastCopiedDate;
         }
     }
+
+    importState(state: State) {
+        this.draftState = state;
+    }
 }
 
 export function useAppSelector<T>(selector: (state: State) => T) {
