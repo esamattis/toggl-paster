@@ -29,11 +29,15 @@ export interface State {
     days: {
         [day: string]: Day | undefined;
     };
+    modifiedDays: {
+        [day: string]: Day | undefined;
+    };
     lastCopiedDate?: string;
 }
 
 const initialState: State = {
     days: {},
+    modifiedDays: {},
 };
 
 const STATE_KEY = "togglePasterState";
@@ -42,7 +46,10 @@ export function createStore() {
     let savedState;
 
     try {
-        savedState = JSON.parse(window.localStorage[STATE_KEY]);
+        savedState = {
+            ...initialState,
+            ...JSON.parse(window.localStorage[STATE_KEY]),
+        };
     } catch (error) {
         // pass
     }
@@ -73,19 +80,47 @@ export function createStore() {
     return store;
 }
 
+export function isCopied(day: Day) {
+    return day.copied || Object.keys(day.projectsCopied).length > 0;
+}
+
 class Reducer extends ImmerReducer<State> {
     addDay(date: Date, id: string, entries: Entry[]) {
-        const day = this.state.days[formatDate(date)];
-        if (day && day.id === id) {
-            return;
-        }
+        const key = formatDate(date);
+        const prevDay = this.state.days[key];
 
-        this.draftState.days[formatDate(date)] = {
+        const newDay = {
             id: id,
             entries: entries,
             copied: false,
             projectsCopied: {},
         };
+
+        if (!prevDay) {
+            this.draftState.days[key] = newDay;
+            return;
+        }
+
+        const modifiedExistingDay = prevDay.id !== id;
+
+        if (!modifiedExistingDay) {
+            return;
+        }
+
+        if (isCopied(prevDay)) {
+            this.draftState.modifiedDays[key] = newDay;
+        } else {
+            this.draftState.days[key] = newDay;
+        }
+    }
+
+    acceptModifiedDay(date: Date) {
+        const key = formatDate(date);
+        const modifiedDay = this.draftState.modifiedDays[key];
+        if (modifiedDay) {
+            this.draftState.days[key] = modifiedDay;
+            delete this.draftState.modifiedDays[key];
+        }
     }
 
     setCopied(date: Date) {
@@ -115,7 +150,7 @@ class Reducer extends ImmerReducer<State> {
     }
 
     importState(state: State) {
-        this.draftState = state;
+        this.draftState = { ...initialState, ...state };
     }
 }
 

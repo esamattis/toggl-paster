@@ -9,6 +9,7 @@ import {
     copyToClipboard,
     formatDate,
     formatDatePath,
+    useModifiedDay,
 } from "../utils";
 import { bemed } from "react-bemed";
 import { css } from "react-bemed/css";
@@ -28,6 +29,23 @@ const Blk = bemed({
             css: css`
                 font-size: 30pt;
                 text-align: center;
+            `,
+        }),
+        ModifiedButton: bemed({
+            as: Button,
+            css: css`
+                width: 200px;
+                margin-right: 25px;
+            `,
+            mods: {
+                redBorders: css`
+                    border-color: red;
+                `,
+            },
+        }),
+        ButtonRow: bemed({
+            css: css`
+                flex-direction: row;
             `,
         }),
         Title2: bemed({
@@ -99,6 +117,8 @@ function formatDuration(duration: number) {
 function Entries() {
     const date = useCurrentDate();
     const day = useDay(date);
+    const [previewModified, setPreviewModified] = React.useState(false);
+    const modifiedDay = useModifiedDay(date);
     const dispatch = useDispatch();
 
     if (!day) {
@@ -114,11 +134,52 @@ function Entries() {
     return (
         <Blk>
             <Blk.Title2>Total {formatDuration(allProjects)}h</Blk.Title2>
+
+            {modifiedDay && (
+                <Blk.ButtonRow>
+                    {Boolean(!previewModified) && (
+                        <Blk.ModifiedButton
+                            type="dashed"
+                            redBorders
+                            onClick={() => {
+                                setPreviewModified(true);
+                            }}
+                        >
+                            Preview modified changes
+                        </Blk.ModifiedButton>
+                    )}
+
+                    {Boolean(previewModified) && (
+                        <Blk.ModifiedButton
+                            type="dashed"
+                            onClick={() => {
+                                setPreviewModified(false);
+                            }}
+                        >
+                            Cancel
+                        </Blk.ModifiedButton>
+                    )}
+
+                    {previewModified && (
+                        <Blk.ModifiedButton
+                            type="danger"
+                            onClick={() => {
+                                dispatch(Actions.acceptModifiedDay(date));
+                                setPreviewModified(false);
+                            }}
+                        >
+                            Accept modified changes
+                        </Blk.ModifiedButton>
+                    )}
+                </Blk.ButtonRow>
+            )}
+
             <List
                 itemLayout="horizontal"
                 dataSource={projects}
                 renderItem={item => {
-                    const ok = day.projectsCopied[item.project];
+                    const ok =
+                        day.projectsCopied[item.project] && !previewModified;
 
                     function handleClick() {
                         copyToClipboard(formatDuration(item.duration));
@@ -139,7 +200,11 @@ function Entries() {
                                     </Blk.DurationText>
                                 }
                             />
-                            <Button type="primary" onClick={handleClick}>
+                            <Button
+                                type={ok ? "ghost" : "primary"}
+                                onClick={handleClick}
+                                disabled={previewModified}
+                            >
                                 Copy
                             </Button>
                         </List.Item>

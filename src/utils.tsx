@@ -39,10 +39,16 @@ export function copyToClipboard(text: string) {
     return success;
 }
 
+/**
+ * Format date for redux state key
+ */
 export function formatDate(date: Date) {
     return format(date, "yyyy-LL-dd");
 }
 
+/**
+ * Format date for url
+ */
 export function formatDatePath(date: Date) {
     return format(date, "/yyyy/LL/dd");
 }
@@ -54,6 +60,12 @@ export function formatMonthPath(date: Date) {
 export function useDay(date: Date) {
     return useAppSelector(state => {
         return state.days[formatDate(date)];
+    });
+}
+
+export function useModifiedDay(date: Date) {
+    return useAppSelector(state => {
+        return state.modifiedDays[formatDate(date)];
     });
 }
 
