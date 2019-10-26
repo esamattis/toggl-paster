@@ -31,6 +31,7 @@
         "eslint": "^6.5.1",
         "eslint-plugin-react": "^7.16.0",
         "eslint-plugin-react-hooks": "^2.1.2",
+        "file-saver": "^2.0.2",
         "immer-reducer": "^0.7.7",
         "json-stable-stringify": "^1.0.1",
         "lodash-es": "^4.17.15",
@@ -47,5 +48,8 @@
         "sha1": "^1.1.1",
         "ts-optchain": "^0.1.8",
         "typescript": "^3.6.4"
+    },
+    "devDependencies": {
+        "@types/file-saver": "^2.0.1"
     }
 }
