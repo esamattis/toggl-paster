@@ -137,7 +137,7 @@ export function DayCell(props: { date: Date }) {
                         )}
                     </Blk.Duration>
                     <Blk.CopyButton
-                        type="primary"
+                        type={day.copied ? "ghost" : "primary"}
                         disabled={!isCurrentMonth}
                         onClick={() => {
                             copyToClipboard(formatClock(duration));
