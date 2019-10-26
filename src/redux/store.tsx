@@ -8,7 +8,7 @@ import {
     createActionCreators,
 } from "immer-reducer";
 import { debounce } from "lodash-es";
-import { formatDate } from "../utils";
+import { getDayKey } from "../utils";
 
 export interface Entry {
     project: string;
@@ -86,7 +86,7 @@ export function isCopied(day: Day) {
 
 class Reducer extends ImmerReducer<State> {
     addDay(date: Date, id: string, entries: Entry[]) {
-        const key = formatDate(date);
+        const key = getDayKey(date);
         const prevDay = this.state.days[key];
 
         const newDay = {
@@ -115,7 +115,7 @@ class Reducer extends ImmerReducer<State> {
     }
 
     acceptModifiedDay(date: Date) {
-        const key = formatDate(date);
+        const key = getDayKey(date);
         const modifiedDay = this.draftState.modifiedDays[key];
         if (modifiedDay) {
             this.draftState.days[key] = modifiedDay;
@@ -124,7 +124,7 @@ class Reducer extends ImmerReducer<State> {
     }
 
     setCopied(date: Date) {
-        const day = this.draftState.days[formatDate(date)];
+        const day = this.draftState.days[getDayKey(date)];
         if (day) {
             day.copied = true;
         }
@@ -132,7 +132,7 @@ class Reducer extends ImmerReducer<State> {
     }
 
     setProjectCopied(date: Date, project: string) {
-        const day = this.draftState.days[formatDate(date)];
+        const day = this.draftState.days[getDayKey(date)];
         if (!day) {
             return;
         }
@@ -143,7 +143,7 @@ class Reducer extends ImmerReducer<State> {
 
     setLastCopiedDate(date?: Date) {
         if (date) {
-            this.draftState.lastCopiedDate = formatDate(date);
+            this.draftState.lastCopiedDate = getDayKey(date);
         } else {
             delete this.draftState.lastCopiedDate;
         }

@@ -10,7 +10,7 @@ import {
     copyToClipboard,
     useDay,
     formatDatePath,
-    formatDate,
+    getDayKey,
     useModifiedDay,
 } from "../utils";
 import { getMonth } from "date-fns/esm";
@@ -129,7 +129,7 @@ export function DayCell(props: { date: Date }) {
         <Tooltip title={projects}>
             <Blk
                 otherMonth={!isCurrentMonth}
-                lastCopied={lastCopiedDate === formatDate(props.date)}
+                lastCopied={lastCopiedDate === getDayKey(props.date)}
             >
                 <Blk.DurationRow>
                     <Blk.Duration ok={day.copied}>

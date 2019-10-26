@@ -7,7 +7,7 @@ import {
     useDay,
     formatMonthPath,
     copyToClipboard,
-    formatDate,
+    getDayKey,
     formatDatePath,
     useModifiedDay,
 } from "../utils";

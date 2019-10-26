@@ -42,7 +42,7 @@ export function copyToClipboard(text: string) {
 /**
  * Format date for redux state key
  */
-export function formatDate(date: Date) {
+export function getDayKey(date: Date) {
     return format(date, "yyyy-LL-dd");
 }
 
@@ -59,13 +59,13 @@ export function formatMonthPath(date: Date) {
 
 export function useDay(date: Date) {
     return useAppSelector(state => {
-        return state.days[formatDate(date)];
+        return state.days[getDayKey(date)];
     });
 }
 
 export function useModifiedDay(date: Date) {
     return useAppSelector(state => {
-        return state.modifiedDays[formatDate(date)];
+        return state.modifiedDays[getDayKey(date)];
     });
 }
 
