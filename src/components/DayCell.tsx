@@ -36,9 +36,11 @@ const Blk = bemed({
             as: Button,
             css: css`
                 padding: 0;
-                height: 22px;
-                width: 50px;
+                height: 30px;
+                width: 30px;
                 text-align: center;
+                justify-content: center;
+                align-items: center;
             `,
         }),
         DurationRow: bemed({
@@ -144,7 +146,7 @@ export function DayCell(props: { date: Date }) {
                             dispatch(Actions.setCopied(props.date));
                         }}
                     >
-                        Copy
+                        <Icon type="copy" />
                     </Blk.CopyButton>
                 </Blk.DurationRow>
 
