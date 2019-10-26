@@ -12,7 +12,7 @@ import {
 } from "../utils";
 import { bemed } from "react-bemed";
 import { css } from "react-bemed/css";
-import { Entry, Actions } from "../redux/state";
+import { Entry, Actions } from "../redux/store";
 import { uniq } from "lodash-es";
 import { useDispatch } from "react-redux";
 import { addDays, format } from "date-fns";

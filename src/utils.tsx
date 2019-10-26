@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { format } from "date-fns";
-import { useAppSelector } from "./redux/state";
+import { useAppSelector } from "./redux/store";
 import { message } from "antd";
 
 export function useRouteDate(): [number, number, number | undefined] {

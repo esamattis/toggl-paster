@@ -6,7 +6,7 @@ moment.locale("fi");
 import React from "react";
 import { Main } from "./components/Main";
 import { HashRouter as Router } from "react-router-dom";
-import { createStore } from "./redux/state";
+import { createStore } from "./redux/store";
 import { FileDrop } from "./components/FileDrop";
 
 function Root() {

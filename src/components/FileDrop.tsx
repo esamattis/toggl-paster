@@ -4,7 +4,7 @@ import stringify from "json-stable-stringify";
 import Papa from "papaparse";
 import { bemed } from "react-bemed";
 import { css } from "react-bemed/css";
-import { Entry, Actions } from "../redux/state";
+import { Entry, Actions } from "../redux/store";
 import { useDispatch } from "react-redux";
 import { message } from "antd";
 
