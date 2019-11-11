@@ -1,4 +1,3 @@
-import "antd/dist/antd.css";
 import React from "react";
 import { useRouteDate } from "../utils";
 import { Month } from "./Month";
