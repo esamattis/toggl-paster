@@ -8,17 +8,20 @@ import { Main } from "./components/Main";
 import { HashRouter as Router } from "react-router-dom";
 import { createStore } from "./redux/store";
 import { FileDrop } from "./components/FileDrop";
+import { CountProvider } from "./Clicker";
 
 function Root() {
     const store = createStore();
     return (
-        <Provider store={store as any}>
-            <Router>
-                <FileDrop>
-                    <Main></Main>
-                </FileDrop>
-            </Router>
-        </Provider>
+        <CountProvider>
+            <Provider store={store as any}>
+                <Router>
+                    <FileDrop>
+                        <Main></Main>
+                    </FileDrop>
+                </Router>
+            </Provider>
+        </CountProvider>
     );
 }
 

@@ -7,6 +7,7 @@ import { bemed } from "react-bemed";
 import { css } from "react-bemed/css";
 import moment from "moment";
 import { format } from "date-fns/esm";
+import { useCounter } from "../Clicker";
 
 const Blk = bemed({
     css: css`
@@ -30,11 +31,14 @@ const Blk = bemed({
 export function Month() {
     const date = useCurrentDate();
     const history = useHistory();
+    const { count } = useCounter();
 
     return (
         <Blk>
             <Blk.Header>
-                <h1>{format(date, "MMMM yyyy")}</h1>
+                <h1>
+                    {format(date, "MMMM yyyy")} - {count}
+                </h1>
                 <p>
                     Just drop your Toggl_time_entries_*.csv files here.{" "}
                     <a href="https://github.com/epeli/toggl-paster">Github</a>.

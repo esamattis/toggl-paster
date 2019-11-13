@@ -16,6 +16,11 @@ import {
 import { getMonth } from "date-fns/esm";
 import { css } from "react-bemed/css";
 import { uniq } from "lodash-es";
+import { Clicker } from "../Clicker";
+
+function Space(props) {
+    return <div className={props.paddingLarge && "py2"}>{props.children}</div>;
+}
 
 const Blk = bemed({
     css: css`
@@ -34,6 +39,7 @@ const Blk = bemed({
     elements: {
         CopyButton: bemed({
             as: Button,
+            className: "brand-color",
             css: css`
                 padding: 0;
                 height: 30px;
@@ -131,6 +137,9 @@ export function DayCell(props: { date: Date }) {
                 otherMonth={!isCurrentMonth}
                 lastCopied={lastCopiedDate === getDayKey(props.date)}
             >
+                <Space padding="2rem">
+                    <Clicker></Clicker>
+                </Space>
                 <Blk.DurationRow>
                     <Blk.Duration ok={day.copied}>
                         {prettyMs(duration)}
