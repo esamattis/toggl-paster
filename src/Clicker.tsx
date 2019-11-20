@@ -7,7 +7,7 @@ const style = {
 
 const ClickerContext = React.createContext<any>(null);
 
-export function CountProvider(props: any) {
+function useClickerState() {
     const [count, setCount] = React.useState(2);
     const inc = () => {
         setCount(i => i + 1);
@@ -16,11 +16,15 @@ export function CountProvider(props: any) {
         setCount(i => i * 2);
     };
 
-    const tools = {
+    return {
         count,
         double,
         inc,
     };
+}
+
+export function CountProvider(props: any) {
+    const tools = useClickerState();
 
     return (
         <ClickerContext.Provider value={tools}>
