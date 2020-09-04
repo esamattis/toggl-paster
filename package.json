@@ -38,7 +38,7 @@
         "lodash-es": "^4.17.15",
         "moment": "^2.24.0",
         "moment-locales-webpack-plugin": "^1.1.0",
-        "papaparse": "^5.1.0",
+        "papaparse": "^5.2.0",
         "prettier": "^1.19.1",
         "pretty-ms": "^5.0.0",
         "react": "^16.11.0",
