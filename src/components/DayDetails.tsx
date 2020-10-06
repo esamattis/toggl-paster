@@ -48,6 +48,22 @@ const Blk = bemed({
                 flex-direction: row;
             `,
         }),
+        SecondHeader: bemed({
+            css: css`
+                flex-direction: row;
+                justify-content: center;
+            `,
+        }),
+        CopySumInfo: bemed({
+            css: css`
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                width: 100px;
+                text-align: center;
+            `,
+        }),
         Title2: bemed({
             as: "h2",
             css: css`
@@ -80,11 +96,7 @@ const Blk = bemed({
 })("DayDetailsContainer");
 
 interface Projects {
-    [project: string]: {
-        project: string;
-        duration: number;
-        descriptions: string[];
-    };
+    [project: string]: Entry;
 }
 
 function listByProject(entries: Entry[]) {
@@ -96,13 +108,14 @@ function listByProject(entries: Entry[]) {
             project = projects[entry.project] = {
                 project: entry.project,
                 duration: 0,
-                descriptions: [],
+                description: "",
             };
         }
 
         project.duration += entry.duration;
-        project.descriptions.push(entry.description);
-        project.descriptions = uniq(project.descriptions);
+        if (!project.description.includes(entry.description)) {
+            project.description += entry.description;
+        }
     }
 
     return Object.keys(projects)
@@ -114,12 +127,19 @@ function formatDuration(duration: number) {
     return (duration / 1000 / 60 / 60).toFixed(2);
 }
 
+function calculateSum(entries: Entry[]) {
+    return entries.reduce((acc, current) => {
+        return acc + current.duration;
+    }, 0);
+}
+
 function Entries() {
     const date = useCurrentDate();
     const day = useDay(date);
     const [previewModified, setPreviewModified] = React.useState(false);
     const modifiedDay = useModifiedDay(date);
     const dispatch = useDispatch();
+    const [sumProjects, setSumpProjects] = React.useState<Entry[]>([]);
 
     if (!day) {
         return null;
@@ -127,13 +147,16 @@ function Entries() {
 
     const projects = listByProject(day.entries);
 
-    const allProjects = day.entries.reduce((acc, current) => {
-        return acc + current.duration;
-    }, 0);
+    const allProjects = calculateSum(day.entries);
 
     return (
         <Blk>
-            <Blk.Title2>Total {formatDuration(allProjects)}h</Blk.Title2>
+            <Blk.SecondHeader>
+                <Blk.Title2>Total {formatDuration(allProjects)}h</Blk.Title2>
+                <Blk.CopySumInfo>
+                    Copied total {formatDuration(calculateSum(sumProjects))} h
+                </Blk.CopySumInfo>
+            </Blk.SecondHeader>
 
             {modifiedDay && (
                 <Blk.ButtonRow>
@@ -181,8 +204,25 @@ function Entries() {
                     const ok =
                         day.projectsCopied[item.project] && !previewModified;
 
+                    const inSum = sumProjects.some(
+                        (p) => p.project === item.project,
+                    );
+
                     function handleClick() {
+                        setSumpProjects([item]);
                         copyToClipboard(formatDuration(item.duration));
+                        dispatch(Actions.setProjectCopied(date, item.project));
+                    }
+
+                    function handleSumClick() {
+                        if (inSum) {
+                            return;
+                        }
+
+                        const nextSum = [...sumProjects, item];
+                        const total = calculateSum(nextSum);
+                        copyToClipboard(formatDuration(total));
+                        setSumpProjects(nextSum);
                         dispatch(Actions.setProjectCopied(date, item.project));
                     }
 
@@ -190,22 +230,32 @@ function Entries() {
                         <List.Item>
                             <List.Item.Meta
                                 title={item.project}
-                                description={item.descriptions.join(", ")}
+                                description={item.description}
                             />
                             <List.Item.Meta
                                 title="Duration"
                                 description={
                                     <Blk.DurationText ok={ok}>
-                                        {formatDuration(item.duration)}h
+                                        {formatDuration(item.duration)} h
                                     </Blk.DurationText>
                                 }
                             />
+
                             <Button
                                 type={ok ? "ghost" : "primary"}
                                 onClick={handleClick}
                                 disabled={previewModified}
                             >
                                 Copy
+                            </Button>
+
+                            <Button
+                                style={{ marginLeft: 3 }}
+                                type={inSum ? "ghost" : "primary"}
+                                onClick={handleSumClick}
+                                disabled={previewModified || inSum}
+                            >
+                                Sum
                             </Button>
                         </List.Item>
                     );
