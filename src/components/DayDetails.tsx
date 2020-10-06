@@ -107,7 +107,7 @@ function listByProject(entries: Entry[]) {
 
     return Object.keys(projects)
         .sort()
-        .map(project => projects[project]);
+        .map((project) => projects[project]);
 }
 
 function formatDuration(duration: number) {
@@ -177,7 +177,7 @@ function Entries() {
             <List
                 itemLayout="horizontal"
                 dataSource={projects}
-                renderItem={item => {
+                renderItem={(item) => {
                     const ok =
                         day.projectsCopied[item.project] && !previewModified;
 

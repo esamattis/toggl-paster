@@ -15,7 +15,7 @@ export function useRouteDate(): [number, number, number | undefined] {
     return location.pathname
         .split("/")
         .filter(Boolean)
-        .map(n => parseInt(n, 10)) as any;
+        .map((n) => parseInt(n, 10)) as any;
 }
 
 export function useCurrentDate() {
@@ -58,13 +58,13 @@ export function formatMonthPath(date: Date) {
 }
 
 export function useDay(date: Date) {
-    return useAppSelector(state => {
+    return useAppSelector((state) => {
         return state.days[getDayKey(date)];
     });
 }
 
 export function useModifiedDay(date: Date) {
-    return useAppSelector(state => {
+    return useAppSelector((state) => {
         return state.modifiedDays[getDayKey(date)];
     });
 }
@@ -72,7 +72,7 @@ export function useModifiedDay(date: Date) {
 export async function readBrowserFile(file: File): Promise<string> {
     const reader = new FileReader();
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         reader.onload = (e: any) => {
             resolve(e.target.result as string);
         };

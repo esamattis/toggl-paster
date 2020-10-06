@@ -99,7 +99,7 @@ function formatClock(duration: number) {
 }
 
 export function DayCell(props: { date: Date }) {
-    const lastCopiedDate = useAppSelector(state => state.lastCopiedDate);
+    const lastCopiedDate = useAppSelector((state) => state.lastCopiedDate);
     const day = useDay(props.date);
     const modifiedDay = useModifiedDay(props.date);
 
@@ -117,12 +117,12 @@ export function DayCell(props: { date: Date }) {
         return acc + current.duration;
     }, 0);
 
-    const projects = uniq(day.entries.map(entry => entry.project))
+    const projects = uniq(day.entries.map((entry) => entry.project))
         .filter(Boolean)
         .join(",");
 
     const projectsOk = day.entries.every(
-        entry => day.projectsCopied[entry.project],
+        (entry) => day.projectsCopied[entry.project],
     );
 
     return (

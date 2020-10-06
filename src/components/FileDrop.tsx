@@ -41,7 +41,7 @@ function parseDuration(duration: string): number {
 
     const [hours, minutes, seconds] = duration
         .split(":")
-        .map(section => parseInt(section, 10));
+        .map((section) => parseInt(section, 10));
 
     return hours * 60 * 60 * 1000 + minutes * 60 * 1000 + seconds * 1000;
 }
@@ -129,7 +129,7 @@ function useFileParser() {
         }
 
         const days: ReturnType<typeof parseTogglEntries> = await new Promise(
-            resolve => {
+            (resolve) => {
                 Papa.parse(file, {
                     complete(res) {
                         resolve(parseTogglEntries(res));
@@ -153,15 +153,15 @@ export function FileDrop(props: { children: React.ReactNode }) {
 
     return (
         <div
-            onDragEnter={e => {
+            onDragEnter={(e) => {
                 e.preventDefault();
                 console.log("enter");
                 setHovering(true);
             }}
-            onDragOver={e => {
+            onDragOver={(e) => {
                 e.preventDefault();
             }}
-            onDrag={e => {
+            onDrag={(e) => {
                 e.preventDefault();
                 console.log("just dragggg");
             }}
@@ -169,7 +169,7 @@ export function FileDrop(props: { children: React.ReactNode }) {
             //     setHovering(false);
             //     console.log("leave");
             // }}
-            onDrop={e => {
+            onDrop={(e) => {
                 e.preventDefault();
                 for (const file of Array.from(e.dataTransfer.files)) {
                     parseFile(file);

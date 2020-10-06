@@ -47,14 +47,14 @@ export function Month() {
                 //     console.log("selected", e);
                 //     setValue(e);
                 // }}
-                onPanelChange={month => {
+                onPanelChange={(month) => {
                     if (month) {
                         console.log("panel changel", month.format("/YYYY/MM"));
                         history.push(month.format("/YYYY/MM"));
                         window.scrollTo(0, 0);
                     }
                 }}
-                dateCellRender={date => {
+                dateCellRender={(date) => {
                     return <DayCell date={date.toDate()}></DayCell>;
                 }}
             />
