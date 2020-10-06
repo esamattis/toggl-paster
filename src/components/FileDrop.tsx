@@ -87,7 +87,7 @@ function parseTogglEntries(res: Papa.ParseResult<any>) {
         }
 
         day.entries.push({
-            project: project || "[no project]",
+            project: project || description,
             description: description,
             duration: parseDuration(duration),
         });
