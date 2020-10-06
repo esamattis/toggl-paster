@@ -3,8 +3,8 @@ import { bemed } from "react-bemed";
 import { Button, Tooltip, message, Typography, Icon, Badge } from "antd";
 import { Link } from "react-router-dom";
 import prettyMs from "pretty-ms";
-import { Actions, useAppSelector } from "../redux/store";
-import { useDispatch } from "react-redux";
+import { Actions, State, useAppSelector } from "../redux/store";
+import { useDispatch, useStore } from "react-redux";
 import {
     useRouteDate,
     copyToClipboard,
@@ -13,7 +13,7 @@ import {
     getDayKey,
     useModifiedDay,
 } from "../utils";
-import { getMonth } from "date-fns";
+import { getMonth, isSunday, sub } from "date-fns";
 import { css } from "react-bemed/css";
 import { uniq } from "lodash";
 
@@ -98,6 +98,52 @@ function formatClock(duration: number) {
     return `${formattedHours}:${formattedMinutes}`;
 }
 
+function copyWeek(date: Date, store: ReturnType<typeof useStore>) {
+    const state: State = store.getState() as any;
+    let weekTotal = 0;
+
+    let weekDay = 6;
+    while (weekDay > 0) {
+        weekDay--;
+        date = sub(date, { days: 1 });
+
+        const day = state.days[getDayKey(date)];
+        if (!day) {
+            continue;
+        }
+
+        const duration = day.entries.reduce((acc, current) => {
+            return acc + current.duration;
+        }, 0);
+
+        weekTotal += duration;
+
+        store.dispatch(Actions.setCopied(date));
+        console.log("copy", date, formatClock(duration));
+    }
+
+    copyToClipboard(formatClock(weekTotal));
+    console.log("week total", formatClock(weekTotal));
+}
+
+function CopyWeekButton(props: { date: Date }) {
+    const store = useStore();
+
+    if (!isSunday(props.date)) {
+        return null;
+    }
+
+    return (
+        <Button
+            onClick={() => {
+                copyWeek(props.date, store);
+            }}
+        >
+            Copy week
+        </Button>
+    );
+}
+
 export function DayCell(props: { date: Date }) {
     const lastCopiedDate = useAppSelector((state) => state.lastCopiedDate);
     const day = useDay(props.date);
@@ -110,7 +156,7 @@ export function DayCell(props: { date: Date }) {
     const dispatch = useDispatch();
 
     if (!day) {
-        return null;
+        return <CopyWeekButton date={props.date} />;
     }
 
     const duration = day.entries.reduce((acc, current) => {
@@ -149,7 +195,6 @@ export function DayCell(props: { date: Date }) {
                         <Icon type="copy" />
                     </Blk.CopyButton>
                 </Blk.DurationRow>
-
                 <Blk.DetailsLink
                     to={formatDatePath(props.date)}
                     ok={projectsOk}
@@ -157,6 +202,7 @@ export function DayCell(props: { date: Date }) {
                     Details
                     <Icon type="caret-right" />
                 </Blk.DetailsLink>
+                <CopyWeekButton date={props.date} />
             </Blk>
         </Tooltip>
     );
