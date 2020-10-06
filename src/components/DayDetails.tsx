@@ -253,7 +253,7 @@ function Entries() {
                                 onClick={handleSumClick}
                                 disabled={previewModified || inSum}
                             >
-                                Sum
+                                +
                             </Button>
                         </List.Item>
                     );
