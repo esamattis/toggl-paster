@@ -251,7 +251,7 @@ function Entries() {
 
                             <Button
                                 style={{ marginLeft: 3 }}
-                                type={inSum ? "ghost" : "primary"}
+                                type={ok ? "dashed" : "primary"}
                                 onClick={handleSumClick}
                                 disabled={previewModified || inSum}
                             >
