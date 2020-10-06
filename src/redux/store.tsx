@@ -141,6 +141,15 @@ class Reducer extends ImmerReducer<State> {
         this.setLastCopiedDate(date);
     }
 
+    clearCopied(date: Date) {
+        const day = this.draftState.days[getDayKey(date)];
+        if (!day) {
+            return;
+        }
+
+        day.projectsCopied = {};
+    }
+
     setLastCopiedDate(date?: Date) {
         if (date) {
             this.draftState.lastCopiedDate = getDayKey(date);

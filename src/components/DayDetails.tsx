@@ -157,7 +157,6 @@ function Entries() {
                     Copied total {formatDuration(calculateSum(sumProjects))} h
                 </Blk.CopySumInfo>
             </Blk.SecondHeader>
-
             {modifiedDay && (
                 <Blk.ButtonRow>
                     {Boolean(!previewModified) && (
@@ -196,7 +195,6 @@ function Entries() {
                     )}
                 </Blk.ButtonRow>
             )}
-
             <List
                 itemLayout="horizontal"
                 dataSource={projects}
@@ -261,6 +259,17 @@ function Entries() {
                     );
                 }}
             />
+            <Button
+                type="danger"
+                onClick={() => {
+                    if (confirm("Are you sure?")) {
+                        dispatch(Actions.clearCopied(date));
+                        setSumpProjects([]);
+                    }
+                }}
+            >
+                Reset copied
+            </Button>
         </Blk>
     );
 }
