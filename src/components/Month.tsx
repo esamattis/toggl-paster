@@ -6,7 +6,7 @@ import { useCurrentDate } from "../utils";
 import { bemed } from "react-bemed";
 import { css } from "react-bemed/css";
 import moment from "moment";
-import { format } from "date-fns/esm";
+import { format } from "date-fns";
 
 const Blk = bemed({
     css: css`

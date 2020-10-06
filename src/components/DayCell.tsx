@@ -13,9 +13,9 @@ import {
     getDayKey,
     useModifiedDay,
 } from "../utils";
-import { getMonth } from "date-fns/esm";
+import { getMonth } from "date-fns";
 import { css } from "react-bemed/css";
-import { uniq } from "lodash-es";
+import { uniq } from "lodash";
 
 const Blk = bemed({
     css: css`

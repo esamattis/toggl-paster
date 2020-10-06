@@ -46,7 +46,7 @@ function parseDuration(duration: string): number {
     return hours * 60 * 60 * 1000 + minutes * 60 * 1000 + seconds * 1000;
 }
 
-function parseTogglEntries(res: Papa.ParseResult) {
+function parseTogglEntries(res: Papa.ParseResult<any>) {
     const days: Record<
         string,
         | {

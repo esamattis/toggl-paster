@@ -7,7 +7,7 @@ import {
     createReducerFunction,
     createActionCreators,
 } from "immer-reducer";
-import { debounce } from "lodash-es";
+import { debounce } from "lodash";
 import { getDayKey } from "../utils";
 
 export interface Entry {
