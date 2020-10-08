@@ -144,6 +144,19 @@ function CopyWeekButton(props: { date: Date }) {
     );
 }
 
+function CopyDateButton(props: { date: Date }) {
+    return (
+        <Blk.CopyButton
+            type="dashed"
+            onClick={() => {
+                copyToClipboard(format(props.date, "dd.LL.yyyy"));
+            }}
+        >
+            <Icon type="copy" />
+        </Blk.CopyButton>
+    );
+}
+
 export function DayCell(props: { date: Date }) {
     const lastCopiedDate = useAppSelector((state) => state.lastCopiedDate);
     const day = useDay(props.date);
@@ -156,7 +169,12 @@ export function DayCell(props: { date: Date }) {
     const dispatch = useDispatch();
 
     if (!day) {
-        return <CopyWeekButton date={props.date} />;
+        return (
+            <>
+                <CopyWeekButton date={props.date} />
+                <CopyDateButton date={props.date} />
+            </>
+        );
     }
 
     const duration = day.entries.reduce((acc, current) => {
@@ -203,15 +221,7 @@ export function DayCell(props: { date: Date }) {
                     <Icon type="caret-right" />
                 </Blk.DetailsLink>
                 <CopyWeekButton date={props.date} />
-                <Blk.CopyButton
-                    type="dashed"
-                    onClick={() => {
-                        copyToClipboard(format(props.date, "dd.LL.yyyy"));
-                        dispatch(Actions.setCopied(props.date));
-                    }}
-                >
-                    <Icon type="copy" />
-                </Blk.CopyButton>
+                <CopyDateButton date={props.date} />
             </Blk>
         </Tooltip>
     );
