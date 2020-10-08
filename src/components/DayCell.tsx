@@ -13,7 +13,7 @@ import {
     getDayKey,
     useModifiedDay,
 } from "../utils";
-import { getMonth, isSunday, sub } from "date-fns";
+import { format, getMonth, isSunday, sub } from "date-fns";
 import { css } from "react-bemed/css";
 import { uniq } from "lodash";
 
@@ -203,6 +203,15 @@ export function DayCell(props: { date: Date }) {
                     <Icon type="caret-right" />
                 </Blk.DetailsLink>
                 <CopyWeekButton date={props.date} />
+                <Blk.CopyButton
+                    type="dashed"
+                    onClick={() => {
+                        copyToClipboard(format(props.date, "dd.LL.yyyy"));
+                        dispatch(Actions.setCopied(props.date));
+                    }}
+                >
+                    <Icon type="copy" />
+                </Blk.CopyButton>
             </Blk>
         </Tooltip>
     );
