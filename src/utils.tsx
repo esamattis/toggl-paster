@@ -21,7 +21,7 @@ export function useRouteDate(): [number, number, number | undefined] {
 export function useCurrentDate() {
     const [year, month, day] = useRouteDate();
 
-    return new Date(year, month - 1, day || new Date().getDate());
+    return new Date(year, month - 1, day || 1);
 }
 
 export function copyToClipboard(text: string) {
