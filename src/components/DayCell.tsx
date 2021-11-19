@@ -115,7 +115,6 @@ function copyWeek(date: Date, store: ReturnType<typeof useStore>) {
 
         weekTotal += duration;
 
-        store.dispatch(Actions.setCopied(date));
         console.log("copy", date, formatClock(duration));
     }
 

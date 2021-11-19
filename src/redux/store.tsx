@@ -80,7 +80,7 @@ export function createStore() {
 }
 
 export function isCopied(day: Day) {
-    return day.copied || Object.keys(day.projectsCopied).length > 0;
+    return Object.keys(day.projectsCopied).length > 0;
 }
 
 class Reducer extends ImmerReducer<State> {
