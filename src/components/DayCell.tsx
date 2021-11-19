@@ -28,9 +28,6 @@ const Blk = bemed({
         otherMonth: css`
             opacity: 0.2;
         `,
-        lastCopied: css`
-            background-color: rgba(251, 255, 0, 0.3);
-        `,
     },
     elements: {
         CopyButton: bemed({
@@ -55,7 +52,6 @@ const Blk = bemed({
             css: css`
                 flex-direction: row;
                 font-size: 140%;
-                color: red;
             `,
             mods: {
                 ok: css`
@@ -159,7 +155,6 @@ function CopyDateButton(props: { date: Date }) {
 }
 
 export function DayCell(props: { date: Date }) {
-    const lastCopiedDate = useAppSelector((state) => state.lastCopiedDate);
     const day = useDay(props.date);
     const modifiedDay = useModifiedDay(props.date);
 
@@ -193,17 +188,13 @@ export function DayCell(props: { date: Date }) {
 
     return (
         <Tooltip title={projects}>
-            <Blk
-                otherMonth={!isCurrentMonth}
-                lastCopied={lastCopiedDate === getDayKey(props.date)}
-            >
+            <Blk otherMonth={!isCurrentMonth}>
                 <Blk.DurationRow>
                     <Blk.CopyButton
-                        type={day.copied ? "ghost" : "primary"}
+                        type="ghost"
                         disabled={!isCurrentMonth}
                         onClick={() => {
                             copyToClipboard(formatClock(duration));
-                            dispatch(Actions.setCopied(props.date));
                         }}
                     >
                         <Icon type="copy" />
@@ -232,7 +223,7 @@ export function DayCell(props: { date: Date }) {
                 </Blk.DurationRow>
 
                 <Blk.DurationRow>
-                    <Blk.Duration ok={day.copied}>
+                    <Blk.Duration>
                         {prettyMs(duration)}
                         {Boolean(modifiedDay) && (
                             <Blk.DurationNote>*</Blk.DurationNote>

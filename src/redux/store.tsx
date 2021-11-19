@@ -18,7 +18,6 @@ export interface Entry {
 
 export interface Day {
     id: string;
-    copied: boolean;
     sentToIntra?: string;
     projectsCopied: {
         [project: string]: boolean | undefined;
@@ -33,7 +32,6 @@ export interface State {
     modifiedDays: {
         [day: string]: Day | undefined;
     };
-    lastCopiedDate?: string;
 }
 
 const initialState: State = {
@@ -124,14 +122,6 @@ class Reducer extends ImmerReducer<State> {
         }
     }
 
-    setCopied(date: Date) {
-        const day = this.draftState.days[getDayKey(date)];
-        if (day) {
-            day.copied = true;
-        }
-        this.setLastCopiedDate(date);
-    }
-
     setProjectCopied(date: Date, project: string) {
         const day = this.draftState.days[getDayKey(date)];
         if (!day) {
@@ -139,7 +129,6 @@ class Reducer extends ImmerReducer<State> {
         }
 
         day.projectsCopied[project] = true;
-        this.setLastCopiedDate(date);
     }
 
     clearCopied(date: Date) {
@@ -149,14 +138,6 @@ class Reducer extends ImmerReducer<State> {
         }
 
         day.projectsCopied = {};
-    }
-
-    setLastCopiedDate(date?: Date) {
-        if (date) {
-            this.draftState.lastCopiedDate = getDayKey(date);
-        } else {
-            delete this.draftState.lastCopiedDate;
-        }
     }
 
     setSentToIntra(date: Date, amount: string) {
