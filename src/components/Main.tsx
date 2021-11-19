@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useRouteDate } from "../utils";
 import { Month } from "./Month";
 import { DayDetails } from "./DayDetails";
@@ -6,6 +6,7 @@ import { bemed } from "react-bemed";
 import { css } from "react-bemed/css";
 import { Button } from "antd";
 import { ExportButton } from "./ExportButton";
+import { IntraAuth } from "./IntraAuth";
 
 const Blk = bemed({
     css: css``,
@@ -37,6 +38,7 @@ export function Main() {
     if (day !== undefined) {
         return (
             <Layout>
+                <IntraAuth />
                 <DayDetails />
             </Layout>
         );
@@ -44,6 +46,7 @@ export function Main() {
 
     return (
         <Layout>
+            <IntraAuth />
             <Month />
         </Layout>
     );

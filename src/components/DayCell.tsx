@@ -16,6 +16,7 @@ import {
 import { format, getMonth, isSunday, sub } from "date-fns";
 import { css } from "react-bemed/css";
 import { uniq } from "lodash";
+import { sendHours } from "./IntraAuth";
 
 const Blk = bemed({
     css: css`
@@ -152,7 +153,7 @@ function CopyDateButton(props: { date: Date }) {
                 copyToClipboard(format(props.date, "dd.LL.yyyy"));
             }}
         >
-            <Icon type="copy" />
+            <Icon type="appstore" />
         </Blk.CopyButton>
     );
 }
@@ -196,12 +197,6 @@ export function DayCell(props: { date: Date }) {
                 lastCopied={lastCopiedDate === getDayKey(props.date)}
             >
                 <Blk.DurationRow>
-                    <Blk.Duration ok={day.copied}>
-                        {prettyMs(duration)}
-                        {Boolean(modifiedDay) && (
-                            <Blk.DurationNote>*</Blk.DurationNote>
-                        )}
-                    </Blk.Duration>
                     <Blk.CopyButton
                         type={day.copied ? "ghost" : "primary"}
                         disabled={!isCurrentMonth}
@@ -212,7 +207,38 @@ export function DayCell(props: { date: Date }) {
                     >
                         <Icon type="copy" />
                     </Blk.CopyButton>
+
+                    <CopyDateButton date={props.date} />
+
+                    <Blk.CopyButton
+                        type={day.sentToIntra ? "ghost" : "primary"}
+                        disabled={!isCurrentMonth}
+                        onClick={async () => {
+                            const hours = duration / 1000 / 60 / 60;
+
+                            const sent = await sendHours({
+                                date: props.date,
+                                hours: hours,
+                            });
+
+                            if (sent) {
+                                dispatch(Actions.setSentToIntra(props.date));
+                            }
+                        }}
+                    >
+                        <Icon type="cloud-upload" />
+                    </Blk.CopyButton>
                 </Blk.DurationRow>
+
+                <Blk.DurationRow>
+                    <Blk.Duration ok={day.copied}>
+                        {prettyMs(duration)}
+                        {Boolean(modifiedDay) && (
+                            <Blk.DurationNote>*</Blk.DurationNote>
+                        )}
+                    </Blk.Duration>
+                </Blk.DurationRow>
+
                 <Blk.DetailsLink
                     to={formatDatePath(props.date)}
                     ok={projectsOk}
@@ -221,7 +247,6 @@ export function DayCell(props: { date: Date }) {
                     <Icon type="caret-right" />
                 </Blk.DetailsLink>
                 <CopyWeekButton date={props.date} />
-                <CopyDateButton date={props.date} />
             </Blk>
         </Tooltip>
     );

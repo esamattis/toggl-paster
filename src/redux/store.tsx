@@ -19,6 +19,7 @@ export interface Entry {
 export interface Day {
     id: string;
     copied: boolean;
+    sentToIntra?: boolean;
     projectsCopied: {
         [project: string]: boolean | undefined;
     };
@@ -156,6 +157,15 @@ class Reducer extends ImmerReducer<State> {
         } else {
             delete this.draftState.lastCopiedDate;
         }
+    }
+
+    setSentToIntra(date: Date) {
+        const day = this.draftState.days[getDayKey(date)];
+        if (!day) {
+            return;
+        }
+
+        day.sentToIntra = true;
     }
 
     importState(state: State) {
