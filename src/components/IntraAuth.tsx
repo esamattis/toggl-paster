@@ -27,7 +27,7 @@ const IntraForm = bemed({
     },
 })("Intra");
 
-export async function sendHours(opts: { date: Date; hours: number }) {
+export async function sendHours(opts: { date: Date; hours: string }) {
     const el = document.querySelector("#intra-auth-form");
 
     if (!(el instanceof HTMLFormElement)) {
@@ -47,7 +47,6 @@ export async function sendHours(opts: { date: Date; hours: number }) {
 
     message.info("Sending to Intra...");
 
-    const amount = opts.hours.toFixed(2);
     const date = format(opts.date, "yyyy-MM-dd");
 
     const res = await fetch(url.toString(), {
@@ -56,11 +55,11 @@ export async function sendHours(opts: { date: Date; hours: number }) {
             Authorization: "Basic " + btoa(username + ":" + password),
             "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: new URLSearchParams({ date, amount }),
+        body: new URLSearchParams({ date, amount: opts.hours }),
     });
 
     if (res.ok) {
-        message.info(`Send ${amount} for ${date} to Intra`);
+        message.info(`Send ${opts.hours} for ${date} to Intra`);
         return true;
     } else {
         message.error("Failed to sync with Intra. See console.");

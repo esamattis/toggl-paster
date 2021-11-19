@@ -189,6 +189,7 @@ export function DayCell(props: { date: Date }) {
     const projectsOk = day.entries.every(
         (entry) => day.projectsCopied[entry.project],
     );
+    const hours = (duration / 1000 / 60 / 60).toFixed(2);
 
     return (
         <Tooltip title={projects}>
@@ -211,18 +212,18 @@ export function DayCell(props: { date: Date }) {
                     <CopyDateButton date={props.date} />
 
                     <Blk.CopyButton
-                        type={day.sentToIntra ? "ghost" : "primary"}
+                        type={day.sentToIntra === hours ? "ghost" : "danger"}
                         disabled={!isCurrentMonth}
                         onClick={async () => {
-                            const hours = duration / 1000 / 60 / 60;
-
                             const sent = await sendHours({
                                 date: props.date,
                                 hours: hours,
                             });
 
                             if (sent) {
-                                dispatch(Actions.setSentToIntra(props.date));
+                                dispatch(
+                                    Actions.setSentToIntra(props.date, hours),
+                                );
                             }
                         }}
                     >
