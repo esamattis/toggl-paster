@@ -4,7 +4,6 @@ import { Month } from "./Month";
 import { DayDetails } from "./DayDetails";
 import { bemed } from "react-bemed";
 import { css } from "react-bemed/css";
-import { Button } from "antd";
 import { ExportButton } from "./ExportButton";
 import { IntraAuth } from "./IntraAuth";
 

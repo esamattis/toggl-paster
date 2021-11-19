@@ -36,7 +36,14 @@ export function Month() {
             <Blk.Header>
                 <h1>{format(date, "MMMM yyyy")}</h1>
                 <p>
-                    Just drop your Toggl_time_entries_*.csv files here.{" "}
+                    Just drop your{" "}
+                    <a
+                        target="_blank"
+                        href="https://track.toggl.com/reports/detailed/"
+                    >
+                        Toggl_time_entries_*.csv
+                    </a>{" "}
+                    files here.{" "}
                     <a href="https://github.com/epeli/toggl-paster">Github</a>.
                 </p>
             </Blk.Header>
