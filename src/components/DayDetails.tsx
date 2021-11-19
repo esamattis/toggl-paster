@@ -135,11 +135,13 @@ function calculateSum(entries: Entry[]) {
 
 function Entries() {
     const date = useCurrentDate();
-    const day = useDay(date);
+    const currentDay = useDay(date);
     const [previewModified, setPreviewModified] = React.useState(false);
     const modifiedDay = useModifiedDay(date);
     const dispatch = useDispatch();
     const [sumProjects, setSumpProjects] = React.useState<Entry[]>([]);
+
+    const day = previewModified ? modifiedDay : currentDay;
 
     if (!day) {
         return null;
