@@ -114,12 +114,9 @@ function copyWeek(date: Date, store: ReturnType<typeof useStore>) {
         }, 0);
 
         weekTotal += duration;
-
-        console.log("copy", date, formatClock(duration));
     }
 
     copyToClipboard(formatClock(weekTotal));
-    console.log("week total", formatClock(weekTotal));
 }
 
 function CopyWeekButton(props: { date: Date }) {
