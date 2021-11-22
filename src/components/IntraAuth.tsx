@@ -59,7 +59,7 @@ export async function sendHours(opts: { date: Date; hours: string }) {
     });
 
     if (res.ok) {
-        message.info(`Send ${opts.hours} for ${date} to Intra`);
+        message.info(`Sent ${opts.hours} for ${date} to Intra`);
         return true;
     } else {
         message.error("Failed to sync with Intra. See console.");
